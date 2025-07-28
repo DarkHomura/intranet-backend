@@ -1,0 +1,29 @@
+version: '3.8'
+
+services:
+        back-rh:
+               build: ./app
+               ports:
+                - "8001:8000"
+               environment:
+                - FASTAPI_ENV=development
+               volumes:
+                - ./app:/app
+               labels:
+                - "traefik.enable=true"
+                - "traefik.http.routers.back-rh.rule=Host(`api.rh.grupotapajos.com.br`)"
+                - "traefik.http.routers.back-rh.entrypoints=web,websecure"
+                - "traefik.http.routers.back-rh.tls.certresolver=leresolver"
+                - "traefik.http.routers.back-rh.service=back-rh"
+                - "traefik.http.services.back-rh.loadbalancer.server.port=8000"
+
+               networks:
+                - maidson_monteiro
+
+networks:
+  maidson_monteiro:
+    external: true
+
+volumes:
+  leresolver:
+    external: true
